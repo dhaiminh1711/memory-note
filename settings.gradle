@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Miin Memory Note"
 include ':app'
+include ':core'
