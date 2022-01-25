@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.miin.learning.memorynote.R
+import androidx.navigation.Navigation
+import com.miin.learning.memorynote.databinding.FragmentListBinding
 
 class ListFragment : Fragment() {
+    private lateinit var binding: FragmentListBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,13 +18,25 @@ class ListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list, container, false)
+    ): View {
+        binding = FragmentListBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.apply {
+            addNoteBtn.setOnClickListener { goToNoteDetails() }
+        }
+    }
+
+    private fun goToNoteDetails(id: Long = 0L) {
+        val action = ListFragmentDirections.actionGoToNote()
+        Navigation.findNavController(binding.noteListView).navigate(action)
     }
 
     companion object {
-
         fun newInstance() = ListFragment()
     }
 }
