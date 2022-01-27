@@ -10,21 +10,18 @@ import com.miin.learning.core.usecase.AddNote
 import com.miin.learning.core.usecase.GetAllNotes
 import com.miin.learning.core.usecase.GetNote
 import com.miin.learning.core.usecase.RemoveNote
+import com.miin.learning.memorynote.framework.di.ApplicationModule
+import com.miin.learning.memorynote.framework.di.DaggerViewModelComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
-    val repository = NoteRepository(RoomNoteDataSource(application))
-
-    val useCases = UseCases(
-        AddNote(repository),
-        GetAllNotes(repository),
-        GetNote(repository),
-        RemoveNote(repository),
-    )
+    @Inject
+    lateinit var useCases: UseCases
 
     private val _saved = MutableLiveData<Boolean>()
     val saved: LiveData<Boolean>
@@ -33,6 +30,13 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     private val _currentNote = MutableLiveData<Note?>()
     val currentNote: LiveData<Note?>
         get() = _currentNote
+
+    init {
+        DaggerViewModelComponent.builder()
+            .applicationModule(ApplicationModule(getApplication()))
+            .build()
+            .inject(this)
+    }
 
     fun savedNote(note: Note) {
         coroutineScope.launch {
