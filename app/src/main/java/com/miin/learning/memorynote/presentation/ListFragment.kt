@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.miin.learning.memorynote.databinding.FragmentListBinding
 import com.miin.learning.memorynote.framework.ListViewModel
 
-class ListFragment : Fragment() {
+class ListFragment : Fragment(), ListAction {
     private lateinit var binding: FragmentListBinding
-    private val notesListAdapter = NoteListAdapter(arrayListOf())
+    private val notesListAdapter = NoteListAdapter(arrayListOf(), this)
     private val viewModel: ListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +48,10 @@ class ListFragment : Fragment() {
         viewModel.getNotes()
     }
 
+    override fun onClick(id: Long) {
+        goToNoteDetails(id)
+    }
+
     private fun observeViewModel() {
         viewModel.notes.observe(viewLifecycleOwner) { notes ->
             binding.apply {
@@ -59,7 +63,7 @@ class ListFragment : Fragment() {
     }
 
     private fun goToNoteDetails(id: Long = 0L) {
-        val action = ListFragmentDirections.actionGoToNote()
+        val action = ListFragmentDirections.actionGoToNote(id)
         Navigation.findNavController(binding.noteListView).navigate(action)
     }
 

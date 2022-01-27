@@ -9,7 +9,7 @@ import com.miin.learning.memorynote.databinding.ItemNoteBinding
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class NoteListAdapter(var notes: ArrayList<Note>) : RecyclerView.Adapter<NoteListAdapter.NoteViewHolder>() {
+class NoteListAdapter(var notes: ArrayList<Note>, val actions: ListAction) : RecyclerView.Adapter<NoteListAdapter.NoteViewHolder>() {
     private lateinit var binding: ItemNoteBinding
 
     fun updateNotes(newNotes: List<Note>) {
@@ -43,6 +43,8 @@ class NoteListAdapter(var notes: ArrayList<Note>) : RecyclerView.Adapter<NoteLis
             val sdf = SimpleDateFormat("MMM dd, HH:mm:ss")
             val resultDate = Date(note.updateTime)
             noteDate.text = "Last updated: ${sdf.format(resultDate)}"
+
+            layout.setOnClickListener { actions.onClick(note.id) }
         }
     }
 }
